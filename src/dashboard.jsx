@@ -6,17 +6,20 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
+import Modal from '@material-ui/core/Modal';
 
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import DoneAllIcon from '@material-ui/icons/DoneAll'
+
 import { mainListItems, secondaryListItems } from './listItems';
 import SimpleTable from './SimpleTable';
-
-import DoneAllIcon from '@material-ui/icons/DoneAll'
+import LoginPanel from './loginPanel';
 
 const drawerWidth = 240;
 
@@ -94,10 +97,33 @@ const styles = theme => ({
   h5: {
     marginBottom: theme.spacing.unit * 2,
   },
+  
 });
 
 class Dashboard extends React.Component {
- 
+  state = {
+    login : false,
+    openLoginPanel: false
+  }
+
+  handleOpenLoginPanel = (e) => {
+    this.setState({ openLoginPanel : true})
+    console.log(e)
+  }
+
+  handleCloseLoginPanel = () => {
+    this.setState({ openLoginPanel : false})
+  }
+
+  handleLogin = ()=>{
+    this.setState({ login : true})
+  }
+
+  handleLogout = (e)=>{
+    this.setState({ login : false})
+    console.log(e)
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -109,7 +135,6 @@ class Dashboard extends React.Component {
           className={classNames(classes.appBar, classes.appBarShift)}
         >
           <Toolbar className={classes.toolbar}>
-            
             <Typography
               component="h1"
               variant="h6"
@@ -119,11 +144,16 @@ class Dashboard extends React.Component {
             >
               WaterDrop
             </Typography>
+            {this.state.login == true &&(
             <IconButton color="inherit">
               <Badge badgeContent={0} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton>)}
+            {this.state.login == true &&(
+            <Button color="inherit" onClick={this.handleLogout}>Logout</Button>)}
+            {this.state.login == false &&(
+            <Button color="inherit" onClick={this.handleOpenLoginPanel}>Login</Button>)}
           </Toolbar>
         </AppBar>
         <Drawer
@@ -131,11 +161,9 @@ class Dashboard extends React.Component {
           classes={{
             paper: classNames(classes.drawerPaper),
           }}
-          //open={this.state.open}
         >
           <div className={classes.toolbarIcon}>
-
-              <DoneAllIcon />
+            <DoneAllIcon />
           </div>
           <Divider />
           <List>{mainListItems}</List>
@@ -152,6 +180,7 @@ class Dashboard extends React.Component {
             <SimpleTable />
           </div>
         </main>
+        <Modal open={this.state.openLoginPanel} onClose={this.handleCloseLoginPanel}><LoginPanel></LoginPanel></Modal>
       </div>
     );
   }
